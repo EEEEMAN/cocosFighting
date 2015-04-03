@@ -2,21 +2,26 @@
 #define __FIGHT_SCENE_H__
 
 #include "cocos2d.h"
-#include "Character.h"
-#include "Motion.h"
-#include "ButtonManager.h"
 #include "cocostudio\CocoStudio.h"
+#include "DefineData.h"
+
+class Character;
+class Stage;
 
 class FightScene : public cocos2d::Layer
 {
 private:
 	Character* player1;
 	Character* player2;
+	Stage* stage;
 public:
 	static cocos2d::Scene* createScene();
 	virtual bool init();
 	CREATE_FUNC(FightScene);
 	virtual void update(float dt);
+	inline Stage* getStage() const { return stage; };
+	inline Character* getPlayer1() const { return player1; };
+	inline Character* getPlayer2() const { return player2; };
 	//Å°ÀÔ·Â
 	virtual void f_onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
 	virtual void f_onKeyReleased(cocos2d::EventKeyboard::KeyCode keycode, cocos2d::Event* event);

@@ -35,7 +35,7 @@ bool HelloWorld::init()
 	background->setScaleY(winSize.height / background->getContentSize().height);
 	addChild(background);
 
-	auto cha = new Character();
+	auto cha = new Character(NULL,true);
 	auto bodyRect = cha->getBodyRect();
 	bodyRect->setPosition(Vec2(winSize.width / 2, winSize.height / 2));
 	addChild(bodyRect);

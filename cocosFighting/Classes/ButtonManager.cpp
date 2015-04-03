@@ -11,3 +11,16 @@ ButtonManager* ButtonManager::getInstance(){
 	}
 	return instance;
 }
+
+bool ButtonManager::isPressed1P(const unsigned char value) const{
+	unsigned char result = (buttonData1P & (unsigned char)value);
+	return (result != 0 ? true : false);
+}
+
+void ButtonManager::setButton1P(const unsigned char value){
+	buttonData1P |= (unsigned char)value;
+}
+
+void ButtonManager::resetButton1P(const unsigned char value){
+	buttonData1P &= ~(unsigned char)value;
+}

@@ -21,9 +21,6 @@
     <ClCompile Include="..\Classes\AppDelegate.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Character.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -47,9 +44,6 @@
     <ClInclude Include="..\Classes\AppDelegate.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\HelloWorldScene.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Character.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -63,6 +57,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\FightScene.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\DefineData.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

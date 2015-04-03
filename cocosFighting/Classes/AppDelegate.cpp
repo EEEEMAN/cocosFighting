@@ -1,5 +1,4 @@
 #include "AppDelegate.h"
-#include "FightScene.h"
 
 USING_NS_CC;
 
