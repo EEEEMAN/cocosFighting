@@ -19,23 +19,29 @@ Character::Character(FightScene* scene, bool is1Pcha) : parentScene(scene), is1P
 	}
 
 	//서있는모션
-	motions.insert(m_hashMap::value_type(MKEY_STAND, new Motion("eman/eman_stand.csb", true)));
-	//앉아있는모션
-	motions.insert(m_hashMap::value_type(MKEY_WALK_FRONT, new Motion("eman/eman_walk_front.csb", true)));
+	motions.insert(m_hashMap::value_type(MKEY_STAND, new Motion("eman/eman_stand.csb", this, true)));
+	//걷는모션
+	auto m_walk = new Motion("eman/eman_walk_front.csb", this, true);
+	setJumpAndMovable(m_walk);
+	m_walk->addCancelMotion(MKEY_PUNCH);
+	motions.insert(m_hashMap::value_type(MKEY_WALK_FRONT, m_walk));
 	//전방점프 상승모션
-	motions.insert(m_hashMap::value_type(MKEY_JUMP_FRONT_UP, new Motion("eman/eman_jump_front_up.csb", true)));
+	motions.insert(m_hashMap::value_type(MKEY_JUMP_FRONT_UP, new Motion("eman/eman_jump_front_up.csb", this, true)));
 	//전방점프 하강모션
-	motions.insert(m_hashMap::value_type(MKEY_JUMP_FRONT_DOWN, new Motion("eman/eman_jump_front_down.csb", true)));
+	motions.insert(m_hashMap::value_type(MKEY_JUMP_FRONT_DOWN, new Motion("eman/eman_jump_front_down.csb", this, true)));
 	//수직점프 상승모션
-	motions.insert(m_hashMap::value_type(MKEY_JUMP_UP, new Motion("eman/eman_jump_up.csb", true)));
+	motions.insert(m_hashMap::value_type(MKEY_JUMP_UP, new Motion("eman/eman_jump_up.csb", this, true)));
 	//수직점프 하강모션
-	motions.insert(m_hashMap::value_type(MKEY_JUMP_DOWN, new Motion("eman/eman_jump_down.csb", true)));
+	motions.insert(m_hashMap::value_type(MKEY_JUMP_DOWN, new Motion("eman/eman_jump_down.csb", this, true)));
+	//펀치모션
+	motions.insert(m_hashMap::value_type(MKEY_PUNCH, new Motion("eman/eman_punch.csb", this, false)));
 
 	//모션 초기화
 	neutral();
 }
 void Character::showLog() const{
-	CCLOG("%d", bodyRect->getPositionX() < enemyCharacter->bodyRect->getPositionX());
+	CCLOG("x:%f, y:%f, cx:%f, cy:%f", bodyRect->getPositionX(), bodyRect->getPositionY(), bodyRect->convertToWorldSpace(bodyRect->getPosition()).x, bodyRect->convertToWorldSpace(bodyRect->getPosition()).y);
+	CCLOG("bx:%f, by:%f", bodyRect->getParent()->convertToWorldSpace(bodyRect->getPosition()).x, bodyRect->getParent()->convertToWorldSpace(bodyRect->getPosition()).y);
 }
 
 void Character::setEnemy(Character* enemy){
@@ -70,22 +76,17 @@ void Character::update(float dt){
 	//y측 처리
 	vy -= G_GRAVITY;
 	bodyRect->setPositionY(bodyRect->getPositionY() + vy);
-	if (bodyRect->getPositionY() < stage->getMinY()){ //땅에닿았는지체크
+	if (bodyRect->getPositionY() < stage->getGroundPos()){ //땅에닿았는지체크
 		vy = 0;
 		vx = 0;
-		bodyRect->setPositionY(stage->getMinY());
+		bodyRect->setPositionY(stage->getGroundPos());
 		onGround = true;
 	}
 	//x측 처리
 	//속도만큼 위치이동
 	bodyRect->setPositionX(bodyRect->getPositionX() + vx);
 	//화면 끝이면 정지
-	if (bodyRect->getPositionX() - (bodyRect->getContentSize().width * 0.5) < stage->getMinX()){//왼쪽끝
-		bodyRect->setPositionX(stage->getMinX() + (bodyRect->getContentSize().width * 0.5));
-	}
-	else if (bodyRect->getPositionX() + (bodyRect->getContentSize().width * 0.5) >= stage->getMaxX()){ //오른쪽끝
-		bodyRect->setPositionX(stage->getMaxX() - (bodyRect->getContentSize().width * 0.5));
-	}
+	checkCharacterPos();
 
 	//키입력 처리
 	auto btnm = ButtonManager::getInstance();
@@ -110,12 +111,27 @@ void Character::update(float dt){
 			walkRight();
 		}
 		if (btnm->getButtonData1P() == 0){
-			if (onGround)
+			if (onGround && c_state != CharacterState::attack)
 				neutral();
 		}
 	}
 	//2P쪽 게이지바 주인을 조작
 	else{
+	}
+}
+
+void Character::checkCharacterPos(){
+	auto winSize = Director::getInstance()->getWinSize();
+	auto worldPos = bodyRect->getParent()->convertToWorldSpace(bodyRect->getPosition());
+	//왼쪽끝
+	if (worldPos.x - (bodyRect->getContentSize().width * 0.5) < 0){
+		worldPos.x = (bodyRect->getContentSize().width * 0.5);
+		bodyRect->setPosition(bodyRect->getParent()->convertToNodeSpace(worldPos));
+	}
+	//오른쪽끝
+	else if (worldPos.x + (bodyRect->getContentSize().width * 0.5) > winSize.width){
+		worldPos.x = winSize.width - (bodyRect->getContentSize().width * 0.5);
+		bodyRect->setPosition(bodyRect->getParent()->convertToNodeSpace(worldPos));
 	}
 }
 
@@ -127,11 +143,19 @@ void Character::doMotion(char* motionKey){
 	}
 }
 
+void Character::setJumpAndMovable(Motion* motion) const{
+	motion->addCancelMotion(MKEY_JUMP_FRONT_UP);
+	motion->addCancelMotion(MKEY_JUMP_UP);
+	motion->addCancelMotion(MKEY_WALK_FRONT);
+}
+
 void Character::neutral(){
-	//상태변경
-	c_state = CharacterState::neutral;
-	//모션적용
-	doMotion(MKEY_STAND);
+	if (c_state != CharacterState::neutral){
+		//상태변경
+		c_state = CharacterState::neutral;
+		//모션적용
+		doMotion(MKEY_STAND);
+	}
 }
 
 void Character::walkLeft(){
@@ -144,9 +168,7 @@ void Character::walkLeft(){
 	//속도만큼 위치이동
 	bodyRect->setPositionX(bodyRect->getPositionX() - walkSpeed);
 	//화면 끝이면 정지
-	if (bodyRect->getPositionX() - (bodyRect->getContentSize().width * 0.5) < stage->getMinX()){//왼쪽끝
-		bodyRect->setPositionX(stage->getMinX() + (bodyRect->getContentSize().width * 0.5));
-	}
+	checkCharacterPos();
 }
 
 void Character::walkRight(){
@@ -159,9 +181,7 @@ void Character::walkRight(){
 	//속도만큼 위치이동
 	bodyRect->setPositionX(bodyRect->getPositionX() + walkSpeed);
 	//화면 끝이면 정지
-	if (bodyRect->getPositionX() + (bodyRect->getContentSize().width * 0.5) >= stage->getMaxX()){ //오른쪽끝
-		bodyRect->setPositionX(stage->getMaxX() - (bodyRect->getContentSize().width * 0.5));
-	}
+	checkCharacterPos();
 
 }
 
@@ -208,4 +228,11 @@ void Character::jumpRight(){
 		c_state = CharacterState::jumpBack;
 	}
 	onGround = false;
+}
+
+void Character::punch(){
+	if (onGround && c_state != CharacterState::attack){
+		c_state = CharacterState::attack;
+		doMotion(MKEY_PUNCH);
+	}
 }

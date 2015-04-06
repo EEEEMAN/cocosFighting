@@ -1,6 +1,9 @@
 #ifndef __FIGHT_SCENE_H__
 #define __FIGHT_SCENE_H__
 
+#define NAME_PLAYER1 "player1"
+#define NAME_PLAYER2 "player2"
+
 #include "cocos2d.h"
 #include "cocostudio\CocoStudio.h"
 #include "DefineData.h"
@@ -19,6 +22,7 @@ public:
 	virtual bool init();
 	CREATE_FUNC(FightScene);
 	virtual void update(float dt);
+	void setCameraPos(cocos2d::Vec2 pos); //카메라 위치를 조정
 	inline Stage* getStage() const { return stage; };
 	inline Character* getPlayer1() const { return player1; };
 	inline Character* getPlayer2() const { return player2; };

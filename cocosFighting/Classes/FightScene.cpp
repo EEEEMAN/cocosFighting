@@ -27,7 +27,8 @@ bool FightScene::init()
 
 	//스테이지 초기화
 	stage = new Stage();
-	addChild(stage->getBackGround());
+	auto backGround = stage->getBackGround();
+	addChild(backGround);
 
 	player1 = new Character(this, true);
 	player2 = new Character(this, false);
@@ -35,23 +36,46 @@ bool FightScene::init()
 	//1플레이어
 	player1->setEnemy(player2);
 	auto bodyRect = player1->getBodyRect();
-	bodyRect->setPosition(Vec2(winSize.width * 0.3, winSize.height / 2));
-	stage->getBackGround()->addChild(bodyRect);
+	bodyRect->setName(NAME_PLAYER1);
+	bodyRect->setPosition(Vec2(backGround->getContentSize().width / 2 - 50, winSize.height / 2));
+	backGround->addChild(bodyRect);
 
 	//2플레이어
 	player2->setEnemy(player1);
 	auto bodyRect2 = player2->getBodyRect();
-	bodyRect2->setPosition(Vec2(winSize.width  * 0.7, winSize.height / 2));
-	stage->getBackGround()->addChild(bodyRect2);
+	bodyRect2->setName(NAME_PLAYER2);
+	bodyRect2->setPosition(Vec2(backGround->getContentSize().width / 2 + 50, winSize.height / 2));
+	backGround->addChild(bodyRect2);
+
+	setCameraPos(Vec2(backGround->getContentSize().width / 2, backGround->getContentSize().height / 2));
 
 	//update함수 호출
 	this->scheduleUpdate();
 	return true;
 }
 
+void FightScene::setCameraPos(cocos2d::Vec2 cPos){
+	auto winSize = Director::getInstance()->getWinSize();
+	//왼쪽끝 검사
+	if (cPos.x - winSize.width / 2 < stage->getMinX()) cPos.x = stage->getMinX() + winSize.width / 2;
+	//오른쪽끝 검사
+	if (cPos.x + winSize.width / 2 >= stage->getMaxX()) cPos.x = stage->getMaxX() - winSize.width / 2;
+	//아래쪽끝 검사
+	if (cPos.y - winSize.height / 2 < stage->getMinY()) cPos.y = stage->getMinY() + winSize.height / 2;
+	//위쪽 끝 검사
+	if (cPos.y + winSize.height / 2 >= stage->getMaxY()) cPos.y = stage->getMaxY() - winSize.height / 2;
+
+	//카메라좌표를 맵좌표로 전환
+	Vec2 mPos = Vec2(-(cPos.x - winSize.width / 2), -(cPos.y - winSize.height / 2));
+
+	//적용
+	stage->getBackGround()->setPosition(mPos);
+}
+
 void FightScene::update(float dt){
 	player1->update(dt);
 	player2->update(dt);
+	stage->update(dt);
 	//몸판정박스 충돌체크
 	auto rect1 = player1->getBodyRect();
 	auto rect2 = player2->getBodyRect();
@@ -89,6 +113,19 @@ void FightScene::f_onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event){
 	else if (keyCode == btnm->btn1P_right){
 		btnm->setButton1P(ButtonData::BTN_RIGHT);
 	}
+	else if (keyCode == btnm->btn1P_A){
+		btnm->setButton1P(ButtonData::BTN_A);
+		player1->punch();
+	}
+	else if (keyCode == btnm->btn1P_B){
+		btnm->setButton1P(ButtonData::BTN_B);
+	}
+	else if (keyCode == btnm->btn1P_C){
+		btnm->setButton1P(ButtonData::BTN_C);
+	}
+	else if (keyCode == btnm->btn1P_start){
+		btnm->setButton1P(ButtonData::BTN_START);
+	}
 }
 
 void FightScene::f_onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event){
@@ -104,5 +141,17 @@ void FightScene::f_onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event){
 	}
 	else if (keyCode == btnm->btn1P_right){
 		btnm->resetButton1P(ButtonData::BTN_RIGHT);
+	}
+	else if (keyCode == btnm->btn1P_A){
+		btnm->resetButton1P(ButtonData::BTN_A);
+	}
+	else if (keyCode == btnm->btn1P_B){
+		btnm->resetButton1P(ButtonData::BTN_B);
+	}
+	else if (keyCode == btnm->btn1P_C){
+		btnm->resetButton1P(ButtonData::BTN_C);
+	}
+	else if (keyCode == btnm->btn1P_start){
+		btnm->resetButton1P(ButtonData::BTN_START);
 	}
 }

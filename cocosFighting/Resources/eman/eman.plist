@@ -7,7 +7,7 @@
 			<key>eman_jump_down_0.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{0,0},{182,258}}</string>
+				<string>{{0,222},{182,258}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -21,7 +21,7 @@
 			<key>eman_jump_down_1.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{480,0},{122,296}}</string>
+				<string>{{327,468},{122,296}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -35,7 +35,7 @@
 			<key>eman_jump_up_0.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{0,259},{177,234}}</string>
+				<string>{{0,481},{177,234}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -49,7 +49,7 @@
 			<key>eman_jump_up_1.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{178,259},{167,184}}</string>
+				<string>{{0,716},{167,184}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -60,10 +60,38 @@
 				<string>{167,184}</string>
 			</dict>
 
+			<key>eman_punch_0.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{168,716},{158,221}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false/>
+				<key>sourceColorRect</key>
+				<string>{{0,0},{158,221}}</string>
+				<key>sourceSize</key>
+				<string>{158,221}</string>
+			</dict>
+
+			<key>eman_punch_1.png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,0},{216,221}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false/>
+				<key>sourceColorRect</key>
+				<string>{{0,0},{216,221}}</string>
+				<key>sourceSize</key>
+				<string>{216,221}</string>
+			</dict>
+
 			<key>eman_stand_0.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{183,0},{150,245}}</string>
+				<string>{{183,222},{150,245}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -77,7 +105,7 @@
 			<key>eman_stand_1.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{334,0},{141,244}}</string>
+				<string>{{183,468},{141,244}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -91,7 +119,7 @@
 			<key>eman_walk_0.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{603,219},{84,250}}</string>
+				<string>{{334,216},{84,250}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -105,7 +133,7 @@
 			<key>eman_walk_1.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{603,0},{107,218}}</string>
+				<string>{{327,765},{107,218}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -119,7 +147,7 @@
 			<key>eman_walk_2.png</key>
 			<dict>
 				<key>frame</key>
-				<string>{{346,245},{133,215}}</string>
+				<string>{{217,0},{133,215}}</string>
 				<key>offset</key>
 				<string>{0,0}</string>
 				<key>rotated</key>
@@ -137,7 +165,7 @@
 			<key>format</key>
 			<integer>2</integer>
 			<key>size</key>
-			<string>{1024,512}</string>
+			<string>{512,1024}</string>
 			<key>textureFileName</key>
 			<string>eman.png</string>
 			</dict>

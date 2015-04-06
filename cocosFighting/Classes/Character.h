@@ -14,6 +14,7 @@
 #define MKEY_JUMP_FRONT_DOWN "motionKey_jump_front_down"
 #define MKEY_JUMP_UP "motionKey_jump_up"
 #define MKEY_JUMP_DOWN "motionKey_jump_down"
+#define MKEY_PUNCH "motionKey_punch"
 
 class FightScene;
 class Motion;
@@ -24,7 +25,8 @@ enum CharacterState{
 	moveBack = 2,
 	jump = 3,
 	jumpFront = 4,
-	jumpBack = 5
+	jumpBack = 5,
+	attack = 6
 };
 
 typedef stdext::hash_map<char*, Motion*> m_hashMap;
@@ -54,6 +56,8 @@ public:
 	int vy = 0; //y측 속도. 양수가 위, 음수가 아래
 private:
 	void doMotion(char* motionKey); //모션키에 해당하는 모션 실행
+	void checkCharacterPos(); //캐릭터가 화면밖으로 나가지 않도록 체크
+	void setJumpAndMovable(Motion* motion) const; //motion을 점프,이동가능하게 변경
 public:
 	Character(FightScene* scene, bool is1P);
 	void setEnemy(Character* enemy);
@@ -69,6 +73,7 @@ public:
 	void jump();
 	void jumpLeft();
 	void jumpRight();
+	void punch();
 };
 
 #endif
