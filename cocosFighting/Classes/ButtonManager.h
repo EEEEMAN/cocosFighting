@@ -20,6 +20,7 @@ class ButtonManager
 {
 private:
 	unsigned char buttonData1P = 0; //2진수로 왼쪽부터 위,아래,왼쪽,오른쪽,A,B,C,START. 0이면 안눌러짐, 1이면 눌러짐
+	unsigned char buttonData2P = 0;
 public:
 	k_code btn1P_up = k_code::KEY_UP_ARROW;
 	k_code btn1P_down = k_code::KEY_DOWN_ARROW;
@@ -36,7 +37,9 @@ public:
 	bool isPressed1P(const unsigned char value) const;
 	void setButton1P(const unsigned char value);
 	void resetButton1P(const unsigned char value);
+	bool isPressed(const unsigned char btnData, const unsigned char value) const;
 	inline unsigned char getButtonData1P() const { return buttonData1P; };
+	inline unsigned char getButtonData2P() const { return buttonData2P; };
 };
 
 #endif

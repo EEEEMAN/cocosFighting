@@ -14,7 +14,9 @@
 #define MKEY_JUMP_FRONT_DOWN "motionKey_jump_front_down"
 #define MKEY_JUMP_UP "motionKey_jump_up"
 #define MKEY_JUMP_DOWN "motionKey_jump_down"
+#define MKEY_CROUCH "motionKey_crouch"
 #define MKEY_PUNCH "motionKey_punch"
+#define MKEY_DAMAGE_HIGH "motionKey_damage_high"
 
 class FightScene;
 class Motion;
@@ -26,7 +28,9 @@ enum CharacterState{
 	jump = 3,
 	jumpFront = 4,
 	jumpBack = 5,
-	attack = 6
+	crouch = 6,
+	attack = 7,
+	damage = 8
 };
 
 typedef stdext::hash_map<char*, Motion*> m_hashMap;
@@ -56,16 +60,21 @@ public:
 	int vy = 0; //y측 속도. 양수가 위, 음수가 아래
 private:
 	void doMotion(char* motionKey); //모션키에 해당하는 모션 실행
+	void doMotion(char* motionKey, int delay); //모션키에 해당하는 모션을 delay민큼 지연후 실행
 	void checkCharacterPos(); //캐릭터가 화면밖으로 나가지 않도록 체크
+	void checkDirection(); //캐릭터의 방향을 조정
+	void checkButton(const unsigned char btnData); //눌러진 버튼 처리
 	void setJumpAndMovable(Motion* motion) const; //motion을 점프,이동가능하게 변경
 public:
 	Character(FightScene* scene, bool is1P);
-	void setEnemy(Character* enemy);
+	inline void setEnemy(Character* enemy){ this->enemyCharacter = enemy; };
 	inline cocos2d::Sprite* getBodyRect() const{ return bodyRect; }
 	inline CharacterState getState() const { return c_state; }
 	inline bool is1Player() const { return is1P; }
+	inline Motion* getCurrentMotion() const { return currentMotion; };
 	void update(float d);
 	void showLog() const;
+	bool isHitEnemyAttack(); //공격을 맞았는지 체크
 	//모션
 	void neutral();
 	void walkLeft();
@@ -73,7 +82,9 @@ public:
 	void jump();
 	void jumpLeft();
 	void jumpRight();
+	void crouch();
 	void punch();
+	void damage(int delay, int damage);
 };
 
 #endif

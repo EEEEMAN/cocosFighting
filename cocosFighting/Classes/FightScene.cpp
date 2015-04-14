@@ -1,4 +1,5 @@
 #include "FightScene.h"
+#include <fstream>
 
 USING_NS_CC;
 
@@ -10,49 +11,64 @@ Scene* FightScene::createScene()
 	return scene;
 }
 
-bool FightScene::init()
-{
-	if (!Layer::init())
-	{
+bool FightScene::init(){
+	if (!Layer::init()){
 		return false;
 	}
-	//윈도우 사이즈 가져옴
-	auto winSize = Director::getInstance()->getWinSize();
 
-	//키 입력
-	auto k_listener = EventListenerKeyboard::create();
-	k_listener->onKeyPressed = CC_CALLBACK_2(FightScene::f_onKeyPressed, this);
-	k_listener->onKeyReleased = CC_CALLBACK_2(FightScene::f_onKeyReleased, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(k_listener, this);
+	std::ofstream fout;
+	std::string path = FileUtils::getInstance()->getWritablePath();
+	path.append("test.cd", std::ios::binary);
+	fout.open(path);
+	fout << "test" << 123544 << std::endl;
+	fout.close();
 
-	//스테이지 초기화
-	stage = new Stage();
-	auto backGround = stage->getBackGround();
-	addChild(backGround);
-
-	player1 = new Character(this, true);
-	player2 = new Character(this, false);
-
-	//1플레이어
-	player1->setEnemy(player2);
-	auto bodyRect = player1->getBodyRect();
-	bodyRect->setName(NAME_PLAYER1);
-	bodyRect->setPosition(Vec2(backGround->getContentSize().width / 2 - 50, winSize.height / 2));
-	backGround->addChild(bodyRect);
-
-	//2플레이어
-	player2->setEnemy(player1);
-	auto bodyRect2 = player2->getBodyRect();
-	bodyRect2->setName(NAME_PLAYER2);
-	bodyRect2->setPosition(Vec2(backGround->getContentSize().width / 2 + 50, winSize.height / 2));
-	backGround->addChild(bodyRect2);
-
-	setCameraPos(Vec2(backGround->getContentSize().width / 2, backGround->getContentSize().height / 2));
-
-	//update함수 호출
-	this->scheduleUpdate();
 	return true;
 }
+
+//bool FightScene::init()
+//{
+//	if (!Layer::init())
+//	{
+//		return false;
+//	}
+//	//윈도우 사이즈 가져옴
+//	auto winSize = Director::getInstance()->getWinSize();
+//
+//	//키 입력
+//	auto k_listener = EventListenerKeyboard::create();
+//	k_listener->onKeyPressed = CC_CALLBACK_2(FightScene::f_onKeyPressed, this);
+//	k_listener->onKeyReleased = CC_CALLBACK_2(FightScene::f_onKeyReleased, this);
+//	_eventDispatcher->addEventListenerWithSceneGraphPriority(k_listener, this);
+//
+//	//스테이지 초기화
+//	stage = new Stage();
+//	auto backGround = stage->getBackGround();
+//	addChild(backGround);
+//
+//	player1 = new Character(this, true);
+//	player2 = new Character(this, false);
+//
+//	//1플레이어
+//	player1->setEnemy(player2);
+//	auto bodyRect = player1->getBodyRect();
+//	bodyRect->setName(NAME_PLAYER1);
+//	bodyRect->setPosition(Vec2(backGround->getContentSize().width / 2 - 50, winSize.height / 2));
+//	backGround->addChild(bodyRect);
+//
+//	//2플레이어
+//	player2->setEnemy(player1);
+//	auto bodyRect2 = player2->getBodyRect();
+//	bodyRect2->setName(NAME_PLAYER2);
+//	bodyRect2->setPosition(Vec2(backGround->getContentSize().width / 2 + 50, winSize.height / 2));
+//	backGround->addChild(bodyRect2);
+//
+//	setCameraPos(Vec2(backGround->getContentSize().width / 2, backGround->getContentSize().height / 2));
+//
+//	//update함수 호출
+//	this->scheduleUpdate();
+//	return true;
+//}
 
 void FightScene::setCameraPos(cocos2d::Vec2 cPos){
 	auto winSize = Director::getInstance()->getWinSize();
@@ -154,4 +170,19 @@ void FightScene::f_onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event){
 	else if (keyCode == btnm->btn1P_start){
 		btnm->resetButton1P(ButtonData::BTN_START);
 	}
+}
+
+Rect FightScene::convertBoxToWorldSpaceRect(const Sprite* boundingBox) const{
+	auto rect = boundingBox->getBoundingBox();
+	if (boundingBox->getParent()->getScaleX() == -1){ //왼쪽을 보고 있다면 반전
+		rect.origin = Vec2(-rect.getMaxX(), rect.getMinY());
+	}
+	rect.origin = boundingBox->getParent()->getParent()->convertToWorldSpace(rect.origin);
+	return rect;
+}
+
+bool FightScene::isCollisionWorldSpace(Sprite* box1, Sprite* box2) const{
+	auto rect1 = convertBoxToWorldSpaceRect(box1);
+	auto rect2 = convertBoxToWorldSpaceRect(box2);
+	return rect1.intersectsRect(rect2);
 }

@@ -23,6 +23,8 @@ public:
 	CREATE_FUNC(FightScene);
 	virtual void update(float dt);
 	void setCameraPos(cocos2d::Vec2 pos); //카메라 위치를 조정
+	bool isCollisionWorldSpace(cocos2d::Sprite*, cocos2d::Sprite*) const; //두 상자가 충돌하는지 검사해주는 함수
+	cocos2d::Rect convertBoxToWorldSpaceRect(const cocos2d::Sprite* box) const;
 	inline Stage* getStage() const { return stage; };
 	inline Character* getPlayer1() const { return player1; };
 	inline Character* getPlayer2() const { return player2; };
